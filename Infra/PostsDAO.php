@@ -78,12 +78,14 @@ class PostsDAO {
     // #endregion
 
     // #region Read系処理
-    public function Read() : Generator {
-        $query = '
-            SELECT * FROM posts;
-        ';
+    public function Read(bool $isDateDesc = true) : Generator {
+        $descOrAsc = $isDateDesc ? 'DESC' : 'ASC';
+        $query = "
+            SELECT * FROM posts
+            ORDER BY post_date_time {$descOrAsc};
+        ";
 
-        $stmt = $this->_pdo->query($query);
+        $stmt = $this->_pdo->Query($query);
         foreach($stmt as $row)
             yield PostDTO::FromArray($row);
     }

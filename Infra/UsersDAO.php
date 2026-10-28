@@ -56,10 +56,12 @@ class UsersDAO {
     // #endregion
 
     // #region Read系処理
-    public function Read() : Generator {
-        $query = '
-            SELECT * FROM users;
-        ';
+    public function Read(bool $isDateDesc = true) : Generator {
+        $descOrAsc = $isDateDesc ? 'DESC' : 'ASC';
+        $query = "
+            SELECT * FROM users
+            ORDER BY sign_up_day {$descOrAsc};
+        ";
 
         $stmt = $this->_pdo->query($query);
         foreach($stmt as $row)
