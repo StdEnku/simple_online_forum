@@ -6,7 +6,7 @@ use \Utils\DiContainer;
 
 // #region DIコンテナ登録
 $diContainer = DiContainer::GetInstance();
-$pdoFactory = function(DiContainer $diContainer) {
+$pdoFactory = function(DiContainer $diContainer) : PDO {
     $dbcs = 'mysql:host=localhost;dbname=online_forum;charset=utf8';
     $dbUser = "root";
     $dbPass = "";

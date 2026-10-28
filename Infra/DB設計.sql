@@ -14,7 +14,7 @@ CREATE TABLE users(
 );
 
 CREATE TABLE posts(
-    id INT AUTO_ENCREMENT, 
+    id INT AUTO_INCREMENT, 
     user_id INT NOT NULL,
     post_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     content VARCHAR(500) NOT NULL,
