@@ -89,6 +89,26 @@ class PostsDAO {
         foreach($stmt as $row)
             yield PostDTO::FromArray($row);
     }
+
+    public function PostWithUser(bool $isPostDateDesc = true) : Generator {
+        $descOrAsc = $isPostDateDesc ? 'DESC' : 'ASC';
+        $query = "
+            SELECT 
+                posts.id AS id, 
+                users.id AS user_id, 
+                users.name AS user_name, 
+                posts.post_date_time AS post_date_time, 
+                posts.content AS content, 
+                posts.is_exists AS is_exists 
+            FROM posts
+            INNER JOIN users ON posts.user_id = users.id
+            ORDER BY posts.post_date_time {$descOrAsc};
+        ";
+
+        $stmt = $this->_pdo->Query($query);
+        foreach($stmt as $row)
+            yield PostWithUserDTO::FromArray($row);
+    }
     // #endregion
 
     // #region Update系処理
