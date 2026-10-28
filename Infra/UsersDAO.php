@@ -7,6 +7,7 @@ require_once __DIR__ . '/InfraException.php';
 use PDO;
 use Generator;
 
+// #region DTO
 class UserDTO {
     public function __construct(
         public ?int $Id,
@@ -26,6 +27,7 @@ class UserDTO {
         );
     }
 }
+// #endregion
 
 class UsersDAO {
     private PDO $_pdo;
@@ -34,6 +36,7 @@ class UsersDAO {
         $this->_pdo = $pdo;
     }
 
+    // #region Create系処理
     public function Create(UserDTO $userDto) {
         $isIdNull = $userDto->Id === null;
         if (!$isIdNull) 
@@ -50,7 +53,9 @@ class UsersDAO {
         $stmt->BindValue(':is_exists', $userDto->IsExists, PDO::PARAM_BOOL);
         $stmt->Execute();
     }
+    // #endregion
 
+    // #region Read系処理
     public function Read() : Generator {
         $query = '
             SELECT * FROM users;
@@ -60,7 +65,9 @@ class UsersDAO {
         foreach($stmt as $row)
             yield UserDTO::FromArray($row);
     }
+    // #endregion
 
+    // #region Update系処理
     public function Update(UserDTO $userDto) {
         $isIdNull = $userDto->Id === null;
         if ($isIdNull) 
@@ -83,4 +90,5 @@ class UsersDAO {
         $stmt->BindValue(':id', $userDto->Id, PDO::PARAM_INT);
         $stmt->Execute();
     }
+    // #endregion
 }

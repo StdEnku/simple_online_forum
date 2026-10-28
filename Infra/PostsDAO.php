@@ -7,6 +7,7 @@ require_once __DIR__ . '/InfraException.php';
 use PDO;
 use Generator;
 
+// #region DTO
 class PostDTO {
     public function __construct(
         public ?int $Id,
@@ -27,6 +28,29 @@ class PostDTO {
     }
 }
 
+class PostWithUserDTO {
+    public function __construct(
+        public int $Id,
+        public int $UserId,
+        public string $UserName, 
+        public string $PostDateTime,
+        public string $Content,
+        public bool $IsExists
+    ) {}
+
+    public static function FromArray(array $row) : self {
+        return new self(
+            (int)$row['id'],
+            (int)$row['user_id'],
+            (string)$row['user_name'],
+            (string)$row['post_date_time'],
+            (string)$row['content'],
+            (bool)$row['is_exists']
+        );
+    }
+}
+// #endregion
+
 class PostsDAO {
     private PDO $_pdo;
 
@@ -34,6 +58,7 @@ class PostsDAO {
         $this->_pdo = $pdo;
     }
 
+    // #region Create系処理
     public function Create(PostDTO $postDto) {
         $isIdNull = $postDto->Id === null;
         if (!$isIdNull) 
@@ -50,7 +75,9 @@ class PostsDAO {
         $stmt->BindValue(':is_exists', $postDto->IsExists, PDO::PARAM_BOOL);
         $stmt->Execute();
     }
+    // #endregion
 
+    // #region Read系処理
     public function Read() : Generator {
         $query = '
             SELECT * FROM posts;
@@ -60,7 +87,9 @@ class PostsDAO {
         foreach($stmt as $row)
             yield PostDTO::FromArray($row);
     }
+    // #endregion
 
+    // #region Update系処理
     public function Update(PostDto $postDto) {
         $isIdNull = $postDto->Id === null;
         if ($isIdNull) 
@@ -83,4 +112,5 @@ class PostsDAO {
         $stmt->BindValue(':id', $postDto->Id, PDO::PARAM_INT);
         $stmt->Execute();
     }
+    // #endregion
 }
